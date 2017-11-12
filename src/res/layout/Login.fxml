@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.LoginActivity">
+   <children>
+      <Label layoutX="117.0" layoutY="64.0" prefHeight="51.0" prefWidth="367.0" text="Welcome Rats Hunters!">
+          <font>
+              <Font size="35.0" />
+          </font></Label>
+      <Label layoutX="66.0" layoutY="142.0" prefHeight="45.0" prefWidth="154.0" text="Username:">
+          <font>
+              <Font size="20.0" />
+          </font></Label>
+      <TextField fx:id="username" layoutX="62.0" layoutY="187.0" prefHeight="40" prefWidth="476.0" />
+      <Label layoutX="66.0" layoutY="278.0" text="Password:">
+          <font>
+              <Font size="20.0" />
+          </font></Label>
+      <PasswordField fx:id="password" layoutX="63.0" layoutY="323.0" prefHeight="40" prefWidth="476.0" />
+      <Button layoutX="117.0" layoutY="449.0" mnemonicParsing="false" onAction="#doLogin" text="Login">
+          <font>
+              <Font size="30.0" />
+          </font></Button>
+      <Button layoutX="354.0" layoutY="449.0" mnemonicParsing="false" onAction="#backToMainPage" text="Back">
+          <font>
+              <Font size="30.0" />
+          </font></Button>
+      <Label layoutX="206.0" layoutY="132.0" text="User does not exist." textFill="#ff7b00" visible="false" fx:id="usernameWrong">
+          <font>
+              <Font size="25.0" />
+          </font></Label>
+       <Label layoutX="195.0" layoutY="265.0" text="Password is not correct." textFill="#ff7b00" visible="false" fx:id="passwordWrong">
+           <font>
+               <Font size="25.0" />
+           </font></Label>
+   </children>
+</AnchorPane>
