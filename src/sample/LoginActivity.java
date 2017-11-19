@@ -1,9 +1,5 @@
 package sample;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.*;
-import com.google.firebase.internal.Log;
-import com.google.firebase.internal.NonNull;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -73,6 +69,7 @@ public class LoginActivity {
 
             Parent root = FXMLLoader.load(getClass().getResource("../res/layout/MapActivity.fxml"));
             Main.stage.setScene(new Scene(root, Main.windowWidth, Main.windowHeight));
+            Main.stage.show();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

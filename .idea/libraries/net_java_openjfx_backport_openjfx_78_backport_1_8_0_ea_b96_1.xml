@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="net.java.openjfx.backport:openjfx-78-backport:1.8.0-ea-b96.1" type="repository">
+    <properties maven-id="net.java.openjfx.backport:openjfx-78-backport:1.8.0-ea-b96.1" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/openjfx-78-backport-1.8.0-ea-b96.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -7,7 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="com.google.firebase:firebase-server-sdk:3.0.3" level="project" />
     <orderEntry type="library" name="json-simple-1.1.1" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-admin:5.5.0" level="project" />
+    <orderEntry type="library" name="com.lynden:GMapsFX:2.10.0" level="project" />
+    <orderEntry type="library" name="net.java.openjfx.backport:openjfx-78-backport:1.8.0-ea-b96.1" level="project" />
   </component>
 </module>

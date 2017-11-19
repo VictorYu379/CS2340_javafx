@@ -1,5 +1,6 @@
 package sample;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import javafx.application.Application;
@@ -28,7 +29,7 @@ public class Main extends Application {
         primaryStage.show();
 
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setServiceAccount(new FileInputStream("src/res/Tom and Jerry-241642ae92bd.json"))
+                .setCredentials(GoogleCredentials.fromStream(new FileInputStream("src/res/Tom and Jerry-241642ae92bd.json")))
                 .setDatabaseUrl("https://tom-and-jerry-a4bd1.firebaseio.com/")
                 .build();
 
