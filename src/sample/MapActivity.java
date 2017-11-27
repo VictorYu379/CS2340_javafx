@@ -30,6 +30,7 @@ public class MapActivity implements LoadingView, Initializable, MapComponentInit
     ArrayList<Report> reports = new ArrayList<>();
     LatLong latLong1;
     LatLong latLong2;
+    boolean infoReceived;
 
     protected GoogleMap map;
 
@@ -101,6 +102,7 @@ public class MapActivity implements LoadingView, Initializable, MapComponentInit
 //                e.printStackTrace();
 //            }
 //        }
+        infoReceived = true;
     }
 
     public void doSearch(ActionEvent actionEvent) {
@@ -113,12 +115,14 @@ public class MapActivity implements LoadingView, Initializable, MapComponentInit
         }
         String start_date = startDate.getValue().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         String end_date = endDate.getValue().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+//        reportManager.getReportsByDate(reports, start_date, end_date, callback);
+//        while (!infoReceived) {}
         ExecutorService executor = Executors.newCachedThreadPool();
         Future<ArrayList<Report>> future = executor.submit(new Callable<ArrayList<Report>>() {
             @Override
             public ArrayList<Report> call() throws Exception {
                 reportManager.getReportsByDate(reports, start_date, end_date, callback);
-                Thread.sleep(500);
+                Thread.sleep(2000);
                 return reports;
             }
         });
@@ -138,18 +142,20 @@ public class MapActivity implements LoadingView, Initializable, MapComponentInit
         while(it.hasNext()) {
             System.out.println("haha");
             Report report = (Report)it.next();
-            Double latitude = Math.round(Double.parseDouble(report.getLatitude()) * 10000.0) / 10000.0;
-            Double longitude = Math.round(Double.parseDouble(report.getLongitude()) * 10000.0) / 10000.0;
-            LatLong latLng;
-            try {
-                latLng = new LatLong(latitude, longitude);
-                MarkerOptions options = new MarkerOptions();
-                options.position(latLng);
-                Marker marker = new Marker(options);
-                map.addMarker(marker);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            LatLong latLng = new LatLong(Double.parseDouble(report.getLatitude()), Double.parseDouble(report.getLongitude()));
+            MarkerOptions options = new MarkerOptions();
+            options.position(latLng);
+            options.title(String.valueOf(report.getKey()));
+//            options.label(report.getDescription());
+            Marker marker = new Marker(options);
+            map.addMarker(marker);
+
+//            InfoWindowOptions infoWindowOptions = new InfoWindowOptions();
+//            infoWindowOptions.content("<h2>Fred Wilkie</h2>"
+//                    + "Current Location: Safeway<br>"
+//                    + "ETA: 45 minutes" );
+//            InfoWindow fredWilkeInfoWindow = new InfoWindow(infoWindowOptions);
+//            fredWilkeInfoWindow.open(map, marker);
         }
     }
 }
