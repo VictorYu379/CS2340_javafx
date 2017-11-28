@@ -21,8 +21,7 @@ public class StartActivity {
 
 
     public void gotoRegister(ActionEvent event) throws IOException {
-        btn = (Button) event.getSource();
-        stage = (Stage) btn.getScene().getWindow();
+        stage = Main.stage;
         Parent root = FXMLLoader.load(getClass().getResource("../res/layout/Register.fxml"));
         stage.setScene(new Scene(root, Main.windowWidth, Main.windowHeight));
     }

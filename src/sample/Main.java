@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sample.model.Report;
 import sample.model.User;
 
 import java.io.File;
@@ -18,6 +19,7 @@ public class Main extends Application {
     static File UserInformation;
     static int windowHeight = 600, windowWidth = 600;
     static User user = User.getInstance();
+    static int currentReport;
 
     @Override
     public void start(Stage primaryStage) throws Exception{

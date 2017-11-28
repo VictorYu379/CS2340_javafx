@@ -6,7 +6,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,18 +22,37 @@ public class ReportManager {
 
     /**
      * Method to get the latest updated report
-     * @param returnArrayList the updated arraylist of reports
-     * @param amount limit to the last updated report
+     * @param key limit to the last updated report
      * @param callback the loading view
      * @throws IllegalArgumentException if returnArrayList is null or amount is smaller than zero
      */
-    public void getLatestReports(List<Report> returnArrayList, int amount, LoadingView callback) {
-        if (returnArrayList == null || amount < 0) {
+    public void getReportsByKey(ArrayList<Report> report, int key, LoadingView callback) {
+        if (key / 100000000 > 0 && key / 100000000 < 10) {
             throw new IllegalArgumentException("enter valid args");
         }
         callback.setUpLoadingView();
-        query = mDatabase.child("Entries").orderByChild("Created Date").limitToLast(amount);
-        reportsGetter(query, returnArrayList, callback);
+        mDatabase.child("Entries").child(String.valueOf(key)).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Report r = new Report(key,
+                        (String) dataSnapshot.child("Created Date").getValue(),
+                        (String) dataSnapshot.child("Location Type").getValue(),
+                        (String) dataSnapshot.child("Incident Zip").getValue(),
+                        (String) dataSnapshot.child("City").getValue(),
+                        (String) dataSnapshot.child("Borough").getValue(),
+                        (String) dataSnapshot.child("Longitude").getValue(),
+                        (String) dataSnapshot.child("Latitude").getValue(),
+                        (String) dataSnapshot.child("Incident Address").getValue()
+                );
+                report.add(r);
+                callback.setDownLoadingView();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     /**
@@ -77,5 +95,4 @@ public class ReportManager {
             }
         });
     }
-
 }

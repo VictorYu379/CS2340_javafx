@@ -10,13 +10,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import sample.model.LoadingView;
 import sample.model.Report;
 import sample.model.ReportManager;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -24,13 +29,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapActivity implements LoadingView, Initializable, MapComponentInitializedListener {
     ReportManager reportManager;
     ArrayList<Report> reports = new ArrayList<>();
     LatLong latLong1;
     LatLong latLong2;
-    boolean infoReceived;
+    AtomicBoolean infoReceived = new AtomicBoolean();
 
     protected GoogleMap map;
 
@@ -53,15 +59,12 @@ public class MapActivity implements LoadingView, Initializable, MapComponentInit
     protected DatePicker startDate;
     @FXML
     protected DatePicker endDate;
-    @FXML
-    protected ProgressIndicator progressIndicator;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         reportManager = ReportManager.getInstance();
         mapView.addMapInializedListener(this);
         vBox.setVisible(true);
-        fxThread = Thread.currentThread();
     }
 
     @Override
@@ -80,29 +83,12 @@ public class MapActivity implements LoadingView, Initializable, MapComponentInit
 
     @Override
     public void setUpLoadingView() {
-
+        map.clearMarkers();
     }
 
     @Override
     public void setDownLoadingView() {
-//        Iterator it = reports.iterator();
-//        while(it.hasNext()) {
-//            System.out.println("haha");
-//            Report report = (Report)it.next();
-//            Double latitude = Math.round(Double.parseDouble(report.getLatitude()) * 10000.0) / 10000.0;
-//            Double longitude = Math.round(Double.parseDouble(report.getLongitude()) * 10000.0) / 10000.0;
-//            LatLong latLng;
-//            try {
-//                latLng = new LatLong(latitude, longitude);
-//                MarkerOptions options = new MarkerOptions();
-//                options.position(latLng);
-//                Marker marker = new Marker(options);
-//                map.addMarker(marker);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-        infoReceived = true;
+        infoReceived.set(true);
     }
 
     public void doSearch(ActionEvent actionEvent) {
@@ -113,49 +99,42 @@ public class MapActivity implements LoadingView, Initializable, MapComponentInit
             alert.showAndWait();
             return;
         }
+        setUpLoadingView();
         String start_date = startDate.getValue().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         String end_date = endDate.getValue().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-//        reportManager.getReportsByDate(reports, start_date, end_date, callback);
-//        while (!infoReceived) {}
-        ExecutorService executor = Executors.newCachedThreadPool();
-        Future<ArrayList<Report>> future = executor.submit(new Callable<ArrayList<Report>>() {
-            @Override
-            public ArrayList<Report> call() throws Exception {
-                reportManager.getReportsByDate(reports, start_date, end_date, callback);
-                Thread.sleep(2000);
-                return reports;
-            }
-        });
-        executor.shutdown();
-        try {
-            reports = future.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        System.out.println(reports.size());
-        System.out.println(Thread.currentThread().getName());
-        setUpLoadingView();
-        map.clearMarkers();
+        reportManager.getReportsByDate(reports, start_date, end_date, callback);
+        while (!infoReceived.get()) {}
         Iterator it = reports.iterator();
         while(it.hasNext()) {
-            System.out.println("haha");
             Report report = (Report)it.next();
-            LatLong latLng = new LatLong(Double.parseDouble(report.getLatitude()), Double.parseDouble(report.getLongitude()));
-            MarkerOptions options = new MarkerOptions();
-            options.position(latLng);
-            options.title(String.valueOf(report.getKey()));
-//            options.label(report.getDescription());
-            Marker marker = new Marker(options);
-            map.addMarker(marker);
-
-//            InfoWindowOptions infoWindowOptions = new InfoWindowOptions();
-//            infoWindowOptions.content("<h2>Fred Wilkie</h2>"
-//                    + "Current Location: Safeway<br>"
-//                    + "ETA: 45 minutes" );
-//            InfoWindow fredWilkeInfoWindow = new InfoWindow(infoWindowOptions);
-//            fredWilkeInfoWindow.open(map, marker);
+            try {
+                LatLong latLng = new LatLong(Double.parseDouble(report.getLatitude()), Double.parseDouble(report.getLongitude()));
+                MarkerOptions options = new MarkerOptions();
+                options.position(latLng);
+                options.title(String.valueOf(report.getKey()) + "\n" + report.getDescription());
+                Marker marker = new Marker(options);
+                map.addMarker(marker);
+            } catch (NumberFormatException e) {
+                return;
+            }
         }
+    }
+
+    public void goToGraph(ActionEvent actionEvent) throws IOException {
+        Stage stage = Main.stage;
+        Parent root = FXMLLoader.load(getClass().getResource("../res/layout/Graph.fxml"));
+        stage.setScene(new Scene(root, Main.windowWidth, Main.windowHeight));
+    }
+
+    public void goToHistory(ActionEvent actionEvent) throws IOException {
+        Stage stage = Main.stage;
+        Parent root = FXMLLoader.load(getClass().getResource("../res/layout/History.fxml"));
+        stage.setScene(new Scene(root, Main.windowWidth, Main.windowHeight));
+    }
+
+    public void goToReport(ActionEvent actionEvent) throws IOException {
+        Stage stage = Main.stage;
+        Parent root = FXMLLoader.load(getClass().getResource("../res/layout/NewReportActivity.fxml"));
+        stage.setScene(new Scene(root, Main.windowWidth, Main.windowHeight));
     }
 }
