@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 public class HistoryActivity implements Initializable {
 
     @FXML
-    protected static ListView<Integer> listView;
+    protected ListView<Integer> listView;
     @FXML
     protected VBox vBox;
 
